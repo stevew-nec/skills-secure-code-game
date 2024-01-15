@@ -31,14 +31,14 @@ jobs:
           # Make a request to the GitHub Status API
           STATUS=$(curl -s https://www.githubstatus.com/api/v2/status.json)
 
-          # Extract the status information (example: status of github.com)
-          GITHUB_STATUS=$(echo "$STATUS" | jq -r '.status.indicator')
+          # Extract the status information
+          GITHUB_INDICATOR=$(echo "$STATUS" | jq -r '.status.indicator')
 
-          # Check if GitHub status is "ok"
-          if [ "$GITHUB_STATUS" == "ok" ]; then
+          # Check if GitHub indicator is "none"
+          if [ "$GITHUB_INDICATOR" == "none" ]; then
             echo "GitHub Status is OK. Proceeding with the workflow."
+            # Add your workflow steps here
           else
-            echo "GitHub Status is not OK. Taking corrective actions..."
+            echo "GitHub Status is not OK. Failing the workflow."
             exit 1
           fi
-
