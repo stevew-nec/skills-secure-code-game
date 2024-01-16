@@ -63,7 +63,7 @@ app.post("/ufo", (req, res) => {
         parser = sax.parser(true);
       parser.onopentag = handleStart;
       parser.ontext = handleText;
-      parser.write(xmlSrc);
+      parser.write(xmlDoc);
 
       // const xmlDoc = libxmljs.parseXml(req.body, {
       //   replaceEntities: false,
