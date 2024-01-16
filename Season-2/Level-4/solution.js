@@ -5,7 +5,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const libxmljs = require("libxmljs");
 const multer = require("multer");
-const app = express();
+const app = express(),
+  sax = require("sax");;
 
 app.use(bodyParser.json());
 app.use(bodyParser.text({ type: "application/xml" }));
@@ -29,11 +30,18 @@ app.post("/ufo", (req, res) => {
     res.status(200).json({ ufo: "Received JSON data from an unknown planet." });
   } else if (contentType === "application/xml") {
     try {
-      const xmlDoc = libxmljs.parseXml(req.body, {
-        replaceEntities: false, // Disabled the option to replace XML entities
-        recover: false, // Disabled the parser to recover from certain parsing errors
-        nonet: true, // Disabled network access when parsing
-      });
+
+      let xmlDoc = req.body,
+        parser = sax.parser(true);
+      parser.onopentag = handleStart;
+      parser.ontext = handleText;
+      parser.write(xmlDoc);
+
+      // const xmlDoc = libxmljs.parseXml(req.body, {
+      //   replaceEntities: false, // Disabled the option to replace XML entities
+      //   recover: false, // Disabled the parser to recover from certain parsing errors
+      //   nonet: true, // Disabled network access when parsing
+      // });
 
       console.log("Received XML data from XMLon:", xmlDoc.toString());
 
