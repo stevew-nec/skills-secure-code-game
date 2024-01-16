@@ -46,9 +46,9 @@ app.post("/ufo", (req, res) => {
   } else if (contentType === "application/xml") {
     try {
       const xmlDoc = libxmljs.parseXml(req.body, {
-        replaceEntities: true,
-        recover: true,
-        nonet: false,
+        replaceEntities: false,
+        recover: false,
+        nonet: true,
       });
 
       console.log("Received XML data from XMLon:", xmlDoc.toString());
