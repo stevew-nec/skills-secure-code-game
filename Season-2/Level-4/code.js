@@ -16,7 +16,8 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { exec } = require("node:child_process");
-const app = express();
+const app = express(),
+  sax = require("sax");;
 
 app.use(bodyParser.json());
 app.use(bodyParser.text({ type: "application/xml" }));
@@ -57,13 +58,21 @@ app.post("/ufo", (req, res) => {
     res.status(200).json({ ufo: "Received JSON data from an unknown planet." });
   } else if (contentType === "application/xml") {
     try {
-      const xmlDoc = libxmljs.parseXml(req.body, {
-        replaceEntities: false,
-        recover: false,
-        nonet: true,
-        dtdload: false,
-      });
 
+      let xmlDoc = req.body,
+        parser = sax.parser(true);
+      parser.onopentag = handleStart;
+      parser.ontext = handleText;
+      parser.write(xmlSrc);
+
+      // const xmlDoc = libxmljs.parseXml(req.body, {
+      //   replaceEntities: false,
+      //   recover: false,
+      //   nonet: true,
+      //   dtdload: false,
+      // });
+
+      
       console.log("Received XML data from XMLon:", xmlDoc.toString());
 
       const extractedContent = [];
