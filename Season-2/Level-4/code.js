@@ -31,7 +31,13 @@ app.post("/ufo/upload", upload.single("file"), (req, res) => {
 
   console.log("Received uploaded file:", req.file.originalname);
 
-  const uploadedFilePath = path.join(__dirname, req.file.originalname);
+  uploadedFilePath = fs.realpathSync(path.resolve(ROOT, path.join(__dirname, req.file.originalname)));
+  if (!uploadedFilePath.startsWith(ROOT)) {
+    res.statusCode = 403;
+    res.end();
+    return;
+  }
+
   fs.writeFileSync(uploadedFilePath, req.file.buffer);
 
   res.status(200).send("File uploaded successfully.");
