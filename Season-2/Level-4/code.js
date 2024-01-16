@@ -31,12 +31,18 @@ app.post("/ufo/upload", upload.single("file"), (req, res) => {
 
   console.log("Received uploaded file:", req.file.originalname);
 
-  uploadedFilePath = fs.realpathSync(path.resolve(ROOT, path.join(__dirname, req.file.originalname)));
-  if (!uploadedFilePath.startsWith(ROOT)) {
-    res.statusCode = 403;
-    res.end();
-    return;
-  }
+   // Generate a unique filename using UUID
+   const uniqueFileName = `${uuidv4()}.xml`;
+
+   // Define the path where the file will be saved
+   const uploadedFilePath = path.join(UPLOAD_DIR, uniqueFileName);
+ 
+  // uploadedFilePath = fs.realpathSync(path.resolve(ROOT, path.join(__dirname, req.file.originalname)));
+  // if (!uploadedFilePath.startsWith(ROOT)) {
+  //   res.statusCode = 403;
+  //   res.end();
+  //   return;
+  // }
 
   fs.writeFileSync(uploadedFilePath, req.file.buffer);
 
